@@ -1,5 +1,6 @@
 package com.raizelshahprojects.cookshare.service.Recipe;
 
+import com.raizelshahprojects.cookshare.dto.RecipeDto;
 import com.raizelshahprojects.cookshare.model.Recipe;
 import com.raizelshahprojects.cookshare.model.User;
 import com.raizelshahprojects.cookshare.request.CreateRecipeRequest;
@@ -49,4 +50,8 @@ public interface IRecipeService {
         existingRecipe.setIngredients(request.getIngredients());
         return existingRecipe;
     }
+
+    List<RecipeDto> getConvertedRecipes(List<Recipe> recipes);
+
+    RecipeDto convertToDto(Recipe recipe);
 }

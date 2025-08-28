@@ -1,5 +1,7 @@
 package com.raizelshahprojects.cookshare.service.Recipe;
 
+import com.raizelshahprojects.cookshare.dto.RecipeDto;
+import com.raizelshahprojects.cookshare.dto.UserDto;
 import com.raizelshahprojects.cookshare.model.Recipe;
 import com.raizelshahprojects.cookshare.model.User;
 import com.raizelshahprojects.cookshare.repository.RecipeRepository;
@@ -8,6 +10,7 @@ import com.raizelshahprojects.cookshare.request.CreateRecipeRequest;
 import com.raizelshahprojects.cookshare.request.UpdateRecipeRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public class RecipeService implements IRecipeService {
 
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Recipe createRecipe(CreateRecipeRequest request) {
@@ -77,5 +81,21 @@ public class RecipeService implements IRecipeService {
                 .stream()
                 .map(Recipe::getCuisine)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<RecipeDto> getConvertedRecipes(List<Recipe> recipes) {
+        return recipes
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    @Override
+    public RecipeDto convertToDto(Recipe recipe) {
+        RecipeDto recipeDto = modelMapper.map(recipe, RecipeDto.class);
+        UserDto userDto = modelMapper.map(recipe.getUser(), UserDto.class);
+        recipeDto.setUser(userDto);
+        return recipeDto;
     }
 }
