@@ -1,5 +1,6 @@
 package com.raizelshahprojects.cookshare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,9 +21,14 @@ public class User {
     private Long id;
     private String username;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Recipe> recipe;
 
     @Transient
     private List<Review> reviews;
+
+    public User(String username) {
+        this.username = username;
+    }
 }
