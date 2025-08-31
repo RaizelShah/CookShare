@@ -1,9 +1,12 @@
 package com.raizelshahprojects.cookshare.service.Recipe;
 
+import com.raizelshahprojects.cookshare.dto.ImageDto;
 import com.raizelshahprojects.cookshare.dto.RecipeDto;
 import com.raizelshahprojects.cookshare.dto.UserDto;
+import com.raizelshahprojects.cookshare.model.Image;
 import com.raizelshahprojects.cookshare.model.Recipe;
 import com.raizelshahprojects.cookshare.model.User;
+import com.raizelshahprojects.cookshare.repository.ImageRepository;
 import com.raizelshahprojects.cookshare.repository.RecipeRepository;
 import com.raizelshahprojects.cookshare.repository.UserRepository;
 import com.raizelshahprojects.cookshare.request.CreateRecipeRequest;
@@ -25,6 +28,7 @@ public class RecipeService implements IRecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Recipe createRecipe(CreateRecipeRequest request) {
@@ -95,6 +99,9 @@ public class RecipeService implements IRecipeService {
     public RecipeDto convertToDto(Recipe recipe) {
         RecipeDto recipeDto = modelMapper.map(recipe, RecipeDto.class);
         UserDto userDto = modelMapper.map(recipe.getUser(), UserDto.class);
+        Optional<Image> image = Optional.ofNullable(imageRepository.getImageByRecipeId(recipe.getId()));
+        image.map(img -> modelMapper.map(img, ImageDto.class)).ifPresent(recipeDto::setImageDto);
+
         recipeDto.setUser(userDto);
         return recipeDto;
     }

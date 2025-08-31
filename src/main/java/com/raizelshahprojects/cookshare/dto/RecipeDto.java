@@ -18,5 +18,6 @@ public class RecipeDto {
     private double averageRating;
     private int totalRateCount;
     private UserDto user;
+    private ImageDto imageDto;
 
 }
