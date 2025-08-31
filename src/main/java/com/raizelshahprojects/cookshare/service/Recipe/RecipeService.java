@@ -2,12 +2,15 @@ package com.raizelshahprojects.cookshare.service.Recipe;
 
 import com.raizelshahprojects.cookshare.dto.ImageDto;
 import com.raizelshahprojects.cookshare.dto.RecipeDto;
+import com.raizelshahprojects.cookshare.dto.ReviewDto;
 import com.raizelshahprojects.cookshare.dto.UserDto;
 import com.raizelshahprojects.cookshare.model.Image;
 import com.raizelshahprojects.cookshare.model.Recipe;
+import com.raizelshahprojects.cookshare.model.Review;
 import com.raizelshahprojects.cookshare.model.User;
 import com.raizelshahprojects.cookshare.repository.ImageRepository;
 import com.raizelshahprojects.cookshare.repository.RecipeRepository;
+import com.raizelshahprojects.cookshare.repository.ReviewRepository;
 import com.raizelshahprojects.cookshare.repository.UserRepository;
 import com.raizelshahprojects.cookshare.request.CreateRecipeRequest;
 import com.raizelshahprojects.cookshare.request.UpdateRecipeRequest;
@@ -29,6 +32,7 @@ public class RecipeService implements IRecipeService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final ImageRepository imageRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
     public Recipe createRecipe(CreateRecipeRequest request) {
@@ -102,7 +106,15 @@ public class RecipeService implements IRecipeService {
         Optional<Image> image = Optional.ofNullable(imageRepository.getImageByRecipeId(recipe.getId()));
         image.map(img -> modelMapper.map(img, ImageDto.class)).ifPresent(recipeDto::setImageDto);
 
+        List<ReviewDto> reviewDto = reviewRepository.findAllByRecipeId(recipe.getId())
+                .stream()
+                .map(review -> modelMapper.map(review, ReviewDto.class)).toList();
+
+        recipeDto.setTotalRateCount(recipe.getTotalRateCount());
+        recipeDto.setAverageRating(recipe.getAverageRating());
+
         recipeDto.setUser(userDto);
+        recipeDto.setReviewDto(reviewDto);
         return recipeDto;
     }
 }

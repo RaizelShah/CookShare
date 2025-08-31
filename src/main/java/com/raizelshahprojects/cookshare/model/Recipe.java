@@ -1,5 +1,6 @@
 package com.raizelshahprojects.cookshare.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -39,8 +40,15 @@ public class Recipe {
     private User user;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<Review> review;
+    private List<Review> review = new ArrayList<>();
 
     @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL)
     private Image image;
+
+    public double getAverageRating() {
+        return review.stream()
+                .mapToInt(Review::getStars)
+                .average()
+                .orElse(0.0);
+    }
 }

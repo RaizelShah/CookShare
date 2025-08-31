@@ -3,6 +3,8 @@ package com.raizelshahprojects.cookshare.dto;
 import com.raizelshahprojects.cookshare.model.User;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class RecipeDto {
     private long id;
@@ -19,5 +21,6 @@ public class RecipeDto {
     private int totalRateCount;
     private UserDto user;
     private ImageDto imageDto;
+    private List<ReviewDto> reviewDto;
 
 }
